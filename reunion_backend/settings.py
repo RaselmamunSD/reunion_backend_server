@@ -114,7 +114,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8080",
     "https://reunion-backend-server.onrender.com",
-    "http://reunion-backend-server.onrender.com"
+    "http://reunion-backend-server.onrender.com",
+    "https://reunion-event-client.vercel.app",  # Add your Vercel domain
+    "https://reunion-event-client.vercel.app"    # Add your Vercel domain
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
