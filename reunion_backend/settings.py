@@ -45,7 +45,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'reunion_backend_server.urls'
+ROOT_URLCONF = 'reunion_backend.urls'
 
 TEMPLATES = [
     {
@@ -63,7 +63,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'reunion_backend_server.wsgi.application'
+WSGI_APPLICATION = 'reunion_backend.wsgi.application'
 
 # Database
 DATABASES = {
