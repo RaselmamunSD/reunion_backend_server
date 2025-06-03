@@ -2,10 +2,12 @@ services:
   - type: web
     name: reunion-backend
     env: python
-    buildCommand: pip install -r requirements.txt && python manage.py migrate
-    startCommand: cd reunion_backend_server && gunicorn reunion_backend_server.wsgi:application
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+    startCommand: gunicorn reunion_backend_server.wsgi:application
     envVars:
-      - key: PYTHONPATH
-        value: /opt/render/project/src/reunion_backend_server
       - key: DJANGO_SETTINGS_MODULE
         value: reunion_backend_server.settings
+      - key: PYTHONPATH
+        value: /opt/render/project/src
