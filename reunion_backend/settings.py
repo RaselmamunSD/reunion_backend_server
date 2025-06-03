@@ -115,8 +115,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080",
     "https://reunion-backend-server.onrender.com",
     "http://reunion-backend-server.onrender.com",
-    "https://reunion-event-client.vercel.app",  # Add your Vercel domain
-    "https://reunion-event-client.vercel.app"    # Add your Vercel domain
+    "https://reunion-event-client.vercel.app",  # Your Vercel domain
+    "http://reunion-event-client.vercel.app"    # Add HTTP version too
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
@@ -153,7 +153,9 @@ REST_FRAMEWORK = {
 # Security Settings
 CSRF_TRUSTED_ORIGINS = [
     'https://reunion-backend-server.onrender.com',
-    'http://reunion-backend-server.onrender.com'
+    'http://reunion-backend-server.onrender.com',
+    'https://reunion-event-client.vercel.app',
+    'http://reunion-event-client.vercel.app'
 ]
 
 # Session and CSRF Cookie Settings
