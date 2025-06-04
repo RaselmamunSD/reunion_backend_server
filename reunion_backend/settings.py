@@ -115,8 +115,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080",
     "https://reunion-backend-server.onrender.com",
     "http://reunion-backend-server.onrender.com",
-    "https://reunion-event-client.vercel.app",  # Your Vercel domain
-    "http://reunion-event-client.vercel.app"    # Add HTTP version too
+    "https://reunion-event-client.vercel.app",
+    "http://reunion-event-client.vercel.app"
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
@@ -138,6 +138,10 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+# Add these settings
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_PREFLIGHT_MAX_AGE = 86400  # 24 hours
 
 # REST Framework settings
 REST_FRAMEWORK = {

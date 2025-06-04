@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
+from decimal import Decimal
 from .models import Event, Comment, Registration, Contact, Notice, FinancialCategory, Income, Expense, OrganizingCommitteeMember, Guest, ProfileFrameSubmission, Student
 from .serializers import EventSerializer, CommentSerializer, RegistrationSerializer, ContactSerializer, NoticeSerializer, FinancialCategorySerializer, IncomeSerializer, ExpenseSerializer, OrganizingCommitteeMemberSerializer, GuestSerializer, ProfileFrameSubmissionSerializer, StudentSerializer
 from rest_framework import generics
@@ -47,7 +48,19 @@ class CommentViewSet(viewsets.ModelViewSet):
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all().order_by('-created_at')
     serializer_class = RegistrationSerializer
-    permission_classes = [permissions.AllowAny]  # Allow anyone to register 
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response(
+                {'detail': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 class ContactViewSet(viewsets.ModelViewSet):
     queryset = Contact.objects.all().order_by('-created_at')
@@ -70,22 +83,38 @@ class IncomeViewSet(viewsets.ModelViewSet):
     serializer_class = IncomeSerializer
     permission_classes = [permissions.AllowAny]
 
-    # Optional: Add an action to get total income
     @action(detail=False, methods=['get'])
     def total(self, request):
-        total_income = Income.objects.aggregate(Sum('amount'))['amount__sum'] or 0
-        return Response({'total_income': total_income})
+        try:
+            total_income = Income.objects.aggregate(Sum('amount'))['amount__sum'] or Decimal('0')
+            return Response({
+                'total_income': str(total_income),
+                'status': 'success'
+            })
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'status': 'error'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ExpenseViewSet(viewsets.ModelViewSet):
     queryset = Expense.objects.all().order_by('-date')
     serializer_class = ExpenseSerializer
     permission_classes = [permissions.AllowAny]
 
-    # Optional: Add an action to get total expenses
     @action(detail=False, methods=['get'])
     def total(self, request):
-        total_expenses = Expense.objects.aggregate(Sum('amount'))['amount__sum'] or 0
-        return Response({'total_expenses': total_expenses})
+        try:
+            total_expenses = Expense.objects.aggregate(Sum('amount'))['amount__sum'] or Decimal('0')
+            return Response({
+                'total_expenses': str(total_expenses),
+                'status': 'success'
+            })
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'status': 'error'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class OrganizingCommitteeMemberViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = OrganizingCommitteeMember.objects.all().order_by('name') # Order by name

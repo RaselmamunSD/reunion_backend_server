@@ -42,6 +42,25 @@ class RegistrationSerializer(serializers.ModelSerializer):
                  'transaction_id', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
+    def validate(self, data):
+        # Validate mobile number format
+        mobile = data.get('mobile', '')
+        if not mobile.isdigit() or len(mobile) < 10:
+            raise serializers.ValidationError({'mobile': 'অবৈধ মোবাইল নম্বর'})
+
+        # Validate email format
+        email = data.get('email', '')
+        if '@' not in email or '.' not in email:
+            raise serializers.ValidationError({'email': 'অবৈধ ইমেইল ঠিকানা'})
+
+        # Validate transaction ID for non-cash payments
+        payment_method = data.get('payment_method')
+        transaction_id = data.get('transaction_id')
+        if payment_method != 'cash' and not transaction_id:
+            raise serializers.ValidationError({'transaction_id': 'লেনদেন আইডি প্রয়োজন'})
+
+        return data
+
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
