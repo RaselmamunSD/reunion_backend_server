@@ -69,17 +69,31 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(OrganizingCommitteeMember)
 class OrganizingCommitteeMemberAdmin(admin.ModelAdmin):
-    list_display = ('name', 'role', 'profession', 'contact', 'created_at')
+    list_display = ('name', 'role', 'profession', 'contact', 'created_at', 'profile_picture_preview')
     list_filter = ('role', 'profession')
     search_fields = ('name', 'role', 'profession', 'contact')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at', 'profile_picture_preview')
+    
+    def profile_picture_preview(self, obj):
+        if obj.profile_picture:
+            return f'<img src="{obj.profile_picture.url}" width="50" height="50" style="object-fit: cover;" />'
+        return "No image"
+    profile_picture_preview.short_description = 'Profile Picture'
+    profile_picture_preview.allow_tags = True
 
 @admin.register(Guest)
 class GuestAdmin(admin.ModelAdmin):
-    list_display = ('name', 'profession', 'contact', 'created_at')
-    list_filter = ('profession', 'contact')
+    list_display = ('name', 'role', 'profession', 'contact', 'created_at', 'profile_picture_preview')
+    list_filter = ('role', 'profession')
     search_fields = ('name', 'profession', 'contact')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at', 'profile_picture_preview')
+    
+    def profile_picture_preview(self, obj):
+        if obj.profile_picture:
+            return f'<img src="{obj.profile_picture.url}" width="50" height="50" style="object-fit: cover;" />'
+        return "No image"
+    profile_picture_preview.short_description = 'Profile Picture'
+    profile_picture_preview.allow_tags = True
 
 @admin.register(ProfileFrameSubmission)
 class ProfileFrameSubmissionAdmin(admin.ModelAdmin):
@@ -87,4 +101,16 @@ class ProfileFrameSubmissionAdmin(admin.ModelAdmin):
     search_fields = ('name', 'mobile', 'address')
     readonly_fields = ('created_at',)
 
-admin.site.register(Student) 
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'batch', 'created_at', 'profile_picture_preview')
+    list_filter = ('batch',)
+    search_fields = ('name', 'batch')
+    readonly_fields = ('created_at', 'updated_at', 'profile_picture_preview')
+    
+    def profile_picture_preview(self, obj):
+        if obj.profile_picture:
+            return f'<img src="{obj.profile_picture.url}" width="50" height="50" style="object-fit: cover;" />'
+        return "No image"
+    profile_picture_preview.short_description = 'Profile Picture'
+    profile_picture_preview.allow_tags = True 
