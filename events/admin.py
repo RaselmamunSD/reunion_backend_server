@@ -109,8 +109,8 @@ class StudentAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at', 'profile_picture_preview')
     
     def profile_picture_preview(self, obj):
-        if obj.profile_picture:
-            return f'<img src="{obj.profile_picture.url}" width="50" height="50" style="object-fit: cover;" />'
+        if obj.photo:
+            return f'<img src="{obj.photo.url}" width="50" height="50" style="object-fit: cover;" />'
         return "No image"
     profile_picture_preview.short_description = 'Profile Picture'
     profile_picture_preview.allow_tags = True 

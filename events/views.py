@@ -127,10 +127,27 @@ class GuestViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny] # Adjust permissions as needed 
 
 class ProfileFrameSubmissionViewSet(viewsets.ModelViewSet):
-    queryset = ProfileFrameSubmission.objects.all().order_by('-created_at') # Order by creation date
+    queryset = ProfileFrameSubmission.objects.all().order_by('-created_at')
     serializer_class = ProfileFrameSubmissionSerializer
-    permission_classes = [permissions.AllowAny] # Allow submissions from anyone
-    # You might want to restrict methods if only creation is needed, e.g., http_method_names = ['post'] 
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        try:
+            print("Received data:", request.data)
+            print("Received files:", request.FILES)
+            
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+            print("Error creating profile frame submission:", str(e))
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 class StudentListByBatchView(generics.ListAPIView):
     """API view to list students, optionally filtered by batch year."""

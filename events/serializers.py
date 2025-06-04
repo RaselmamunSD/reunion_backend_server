@@ -109,11 +109,9 @@ class GuestSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'updated_at']
 
 class ProfileFrameSubmissionSerializer(serializers.ModelSerializer):
-    bloodType = serializers.CharField(source='blood_type', required=False, allow_null=True, allow_blank=True)
-
     class Meta:
         model = ProfileFrameSubmission
-        fields = ['id', 'picture', 'name', 'mobile', 'address', 'batch', 'bloodType', 'created_at']
+        fields = ['id', 'picture', 'name', 'mobile', 'address', 'batch', 'blood_type', 'created_at']
         read_only_fields = ['created_at']
 
 class StudentSerializer(serializers.ModelSerializer):
