@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, never_cache
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
@@ -7,7 +7,10 @@ from decimal import Decimal
 from .models import Event, Comment, Registration, Contact, Notice, FinancialCategory, Income, Expense, OrganizingCommitteeMember, Guest, ProfileFrameSubmission, Student
 from .serializers import EventSerializer, CommentSerializer, RegistrationSerializer, ContactSerializer, NoticeSerializer, FinancialCategorySerializer, IncomeSerializer, ExpenseSerializer, OrganizingCommitteeMemberSerializer, GuestSerializer, ProfileFrameSubmissionSerializer, StudentSerializer
 from rest_framework import generics
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 
+@method_decorator(never_cache, name='dispatch')
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all().order_by('-date')
     serializer_class = EventSerializer
@@ -68,6 +71,7 @@ class ContactViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     http_method_names = ['post'] # Only allow POST requests for contact form 
 
+@method_decorator(never_cache, name='dispatch')
 class NoticeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Notice.objects.all().order_by('-date') # Order by date descending
     serializer_class = NoticeSerializer
@@ -116,11 +120,13 @@ class ExpenseViewSet(viewsets.ModelViewSet):
                 'status': 'error'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@method_decorator(never_cache, name='dispatch')
 class OrganizingCommitteeMemberViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = OrganizingCommitteeMember.objects.all().order_by('name') # Order by name
     serializer_class = OrganizingCommitteeMemberSerializer
     permission_classes = [permissions.AllowAny] # Allow anyone to view members 
 
+@method_decorator(never_cache, name='dispatch')
 class GuestViewSet(viewsets.ModelViewSet):
     queryset = Guest.objects.all().order_by('name') # Order by name
     serializer_class = GuestSerializer
@@ -149,9 +155,11 @@ class ProfileFrameSubmissionViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+@method_decorator(never_cache, name='dispatch')
 class StudentListByBatchView(generics.ListAPIView):
     """API view to list students, optionally filtered by batch year."""
     serializer_class = StudentSerializer
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         """
@@ -163,3 +171,8 @@ class StudentListByBatchView(generics.ListAPIView):
         if batch_year is not None:
             queryset = queryset.filter(batch=batch_year)
         return queryset 
+
+@never_cache
+def your_project_view(request):
+    # Your view logic here
+    pass 

@@ -126,7 +126,7 @@ else:
     
     # Additional S3 settings
     AWS_S3_OBJECT_PARAMETERS = {
-        'CacheControl': 'max-age=86400',
+        'CacheControl': 'max-age=0',
     }
     AWS_DEFAULT_ACL = 'public-read'
     AWS_S3_SIGNATURE_VERSION = 's3v4'
@@ -198,4 +198,15 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 
 # If you're behind a proxy
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True 
+SECURE_SSL_REDIRECT = True
+
+# Cache settings
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
+# Disable caching for admin pages
+CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True 

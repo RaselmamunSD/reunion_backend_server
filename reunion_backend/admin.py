@@ -1,6 +1,11 @@
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.utils.translation import gettext_lazy as _
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.contrib import messages
+from django.utils.html import format_html
+from django.urls import reverse
 
 class ReunionAdminSite(AdminSite):
     # Text to put at the end of each page's <title>.
@@ -162,6 +167,45 @@ admin_site = CustomAdminSite(name='admin')
 # Register your models with the custom admin site
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
+
+class CustomModelAdmin(admin.ModelAdmin):
+    def response_change(self, request, obj):
+        """
+        Override the response_change method to ensure proper state management
+        """
+        if "_continue" in request.POST:
+            # If continuing to edit, redirect to the same page
+            return super().response_change(request, obj)
+        
+        # For all other cases, redirect to the changelist view
+        opts = self.opts
+        preserved_filters = self.get_preserved_filters(request)
+        
+        msg_dict = {
+            "name": opts.verbose_name,
+            "obj": str(obj),
+        }
+        
+        msg = format_html(
+            _("The {name} '{obj}' was changed successfully."),
+            **msg_dict
+        )
+        self.message_user(request, msg, messages.SUCCESS)
+        
+        # Redirect to the changelist view
+        redirect_url = reverse(
+            f"admin:{opts.app_label}_{opts.model_name}_changelist",
+            current_app=self.admin_site.name,
+        )
+        
+        # Add preserved filters if any
+        if preserved_filters:
+            redirect_url = add_preserved_filters(
+                {"preserved_filters": preserved_filters, "opts": opts},
+                redirect_url
+            )
+        
+        return HttpResponseRedirect(redirect_url)
 
 admin_site.register(User, UserAdmin)
 admin_site.register(Group, GroupAdmin) 
