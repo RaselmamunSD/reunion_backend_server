@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-here')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # For development. In production, specify your domain
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
@@ -209,4 +209,11 @@ CACHES = {
 }
 
 # Disable caching for admin pages
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True 
+CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
+
+# Add this to your ALLOWED_HOSTS
+ALLOWED_HOSTS = ['*']  # For development. In production, specify your domain
+
+# Make sure these settings are present
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True 
