@@ -2,7 +2,9 @@ services:
   - type: web
     name: reunion-backend-server
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
     startCommand: gunicorn reunion_backend.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
@@ -11,11 +13,13 @@ services:
         value: 8000
       - key: SECRET_KEY
         generateValue: true
-      - key: DATABASE_URL
-        fromDatabase:
-          name: reunion-db
-          property: connectionString
       - key: CORS_ALLOWED_ORIGINS
         value: https://reunion-event-client.vercel.app
       - key: RENDER_EXTERNAL_HOSTNAME
         value: reunion-backend-server.onrender.com
+
+databases:
+  - name: reunion-db
+    databaseName: reunion_db
+    user: reunion_user
+    plan: free

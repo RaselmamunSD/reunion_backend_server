@@ -77,11 +77,13 @@ class NoticeViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = NoticeSerializer
     permission_classes = [permissions.AllowAny] # Allow anyone to view notices 
 
+@method_decorator(never_cache, name='dispatch')
 class FinancialCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = FinancialCategory.objects.all()
     serializer_class = FinancialCategorySerializer
     permission_classes = [permissions.AllowAny]
 
+@method_decorator(never_cache, name='dispatch')
 class IncomeViewSet(viewsets.ModelViewSet):
     queryset = Income.objects.all().order_by('-date')
     serializer_class = IncomeSerializer
@@ -101,6 +103,7 @@ class IncomeViewSet(viewsets.ModelViewSet):
                 'status': 'error'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@method_decorator(never_cache, name='dispatch')
 class ExpenseViewSet(viewsets.ModelViewSet):
     queryset = Expense.objects.all().order_by('-date')
     serializer_class = ExpenseSerializer
